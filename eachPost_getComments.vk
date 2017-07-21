@@ -1,0 +1,53 @@
+var myList = Args.post_id_array_str;
+var listSeparator = ",";
+var listItemsType = "integer";
+var result = [];
+var charsLength = myList.length;
+var currentPosition = 0;
+var previousSeparatorPosition = -1;
+var item;
+while (currentPosition < charsLength) {
+ if (myList.substr(currentPosition, 1) == listSeparator) {
+  item = myList.substr(previousSeparatorPosition + 1, currentPosition - previousSeparatorPosition - 1);
+  if (listItemsType == "integer") {
+   item = parseInt(item);
+  }
+  result.push(item);
+  previousSeparatorPosition = currentPosition;
+ }
+ currentPosition = currentPosition + 1;
+}
+var post_id;
+var posts = result;
+var all_comments = [];
+while (posts.length != 0){post_id = posts.shift();
+        var owner_id = Args.owner_id;
+        var comments = API.wall.getComments(
+            {"owner_id":(owner_id),
+             "post_id":(post_id),
+             "need_likes":"1",
+             "offset":"0",
+             "count":"100",
+             "sort":"asc",
+             "preview_length":"1",
+             "extended":"0",
+             "v":"5.27"});
+        var comments_cnt = comments.count;
+        comments = comments.items;
+        var offset_comments = 100;
+        while (offset_comments < comments_cnt)
+            {comments = comments + API.wall.getComments(
+                {"owner_id":(owner_id),
+                 "post_id":(post_id),
+                 "need_likes":"1",
+                 "offset":(offset_comments),
+                 "count":"100",
+                 "sort":"asc",
+                 "preview_length":"1",
+                 "extended":"0",
+                 "v":"5.27"}
+            ).items;
+        offset_comments = offset_comments + 100;};
+        all_comments = all_comments+comments;
+    };
+return all_comments;

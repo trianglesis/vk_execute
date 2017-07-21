@@ -1,0 +1,62 @@
+var posts_cnt;
+var posts;
+var post;
+var post_format;
+var post_list = [];
+var post_items;
+
+var owner_id = Args.owner_id;
+var domain = Args.domain;
+// var owner_id = '-46631810';
+// var domain = 'typical_kirovohrad';
+
+var offset_posts = Args.global_offset_posts;
+offset_posts = parseInt(offset_posts);
+
+// var offset_posts = 0;
+var run_count = 0;
+var iter_count = 1;
+
+while (iter_count > run_count )
+    {posts = API.wall.get
+        (
+            {
+                "owner_id":(owner_id),
+                "domain":(domain),
+                "offset":(offset_posts),
+                "count":"100",
+                "filter":"all",
+                "extended":"0",
+                "v":"5.42"
+            }
+        );
+        post_items = posts.items;
+        while(post_items.length != 0)
+        {
+            post = post_items.shift();
+            post_format =
+                [
+                    post.id,
+                    post.date,
+                    post.comments.count,
+                    post.likes.count,
+                    post.reposts.count,
+                    post.owner_id,
+                    post.from_id
+                ];
+            post_list.push(post_format);
+        }
+        offset_posts = offset_posts + 100;
+        run_count = run_count + 1;
+        posts_cnt = posts.count;
+
+    };
+    
+// return post_list;
+return {"posts_cnt": posts_cnt,
+        "run_count":run_count,
+        "iter_count":iter_count,
+        "offset_posts": offset_posts,
+        "posts": post_list};
+
+// # When run more than 3 iter: error_msg: 'Runtime error occurred during code invocation: Too many operations',

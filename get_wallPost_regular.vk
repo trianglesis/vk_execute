@@ -1,0 +1,26 @@
+var posts_cnt;
+var posts;
+var post_list = [];
+var offset_posts = 0;
+var run_count = 0;
+var iter_count = 5;
+while (iter_count > run_count )
+    {posts = API.wall.get(
+        {"owner_id":(Args.owner_id),
+         "domain":(Args.domain),
+         "offset":(offset_posts),
+         "count":"100",
+         "filter":"all",
+         "extended":"0",
+         "v":"5.42"}
+        );
+    post_list.push(posts.items);
+    offset_posts = offset_posts + 100;
+    run_count = run_count + 1;
+    posts_cnt = posts.count;
+    };
+return {"posts_cnt": posts_cnt,
+        "run_count":run_count,
+        "iter_count":iter_count,
+        "offset_posts": offset_posts,
+        "posts": post_list};

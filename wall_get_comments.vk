@@ -1,0 +1,110 @@
+var comment;
+var comment_items;
+var comment_likes;
+var comments_format;
+var comments_list = [];
+
+var myList = Args.post_id_array_str;
+var listSeparator = ",";
+var listItemsType = "integer";
+var result = [];
+var charsLength = myList.length;
+var currentPosition = 0;
+var previousSeparatorPosition = -1;
+var item;
+while (currentPosition < charsLength) {
+ if (myList.substr(currentPosition, 1) == listSeparator) {
+  item = myList.substr(previousSeparatorPosition + 1, currentPosition - previousSeparatorPosition - 1);
+  if (listItemsType == "integer") {
+   item = parseInt(item);
+  }
+  result.push(item);
+  previousSeparatorPosition = currentPosition;
+ }
+ currentPosition = currentPosition + 1;
+}
+var post_id;
+var posts = result;
+
+while (posts.length != 0)
+    {post_id = posts.shift();
+        var owner_id = Args.owner_id;
+        var comments = API.wall.getComments
+        (
+            {
+                "owner_id":(owner_id),
+                "post_id":(post_id),
+                "need_likes":"1",
+                "offset":"0",
+                "count":"100",
+                "sort":"asc",
+                "preview_length":"1000",
+                "extended":"0",
+                "v":"5.27"
+            }
+        );
+        comment_items = comments.items;
+    while(comment_items.length != 0)
+    {
+        comment = comment_items.shift();
+        comment_likes =  comment.likes;
+        comment_likes =  comment_likes.count;
+        comments_format =
+            [
+                comment.id,
+                comment.from_id,
+                comment.date,
+                comment_likes
+            ];
+        comments_list.push(comments_format);
+    };
+    var comments_cnt = comments.count;
+    var offset_comments = 100;
+    while (offset_comments < comments_cnt)
+    {
+        comments = comments + API.wall.getComments
+        (
+            {
+                "owner_id":(Args.owner_id),
+                "post_id":(post_id),
+                "need_likes":"1",
+                "offset":(offset_comments),
+                "count":"1000",
+                "sort":"asc",
+                "preview_length":"1000",
+                "extended":"0",
+                "v":"5.27"
+            }
+        )
+        ;comment_items = comments.items;
+        while(comment_items.length != 0)
+        {
+            comment = comment_items.shift();
+            comment_likes =  comment.likes;
+            comment_likes =  comment_likes.count;
+            comments_format =
+                [
+                    comment.id,
+                    comment.from_id,
+                    comment.date,
+                    comment_likes
+                ];
+            comments_list.push(comments_format);
+        };
+        offset_comments = offset_comments + 100;
+    };
+};
+
+return comments_list;
+
+//response: [[481784, 191497646, 1469552168, 2],
+// [481785, 13400503, 1469552240, 2],
+// [481790, 138118604, 1469553891, 6],
+// [481818, 255472757, 1469561626, 0],
+// [481821, 255472757, 1469562110, 0],
+// [481824, 255472757, 1469562212, 0],
+// [481828, 255472757, 1469562342, 0],
+// [481832, 255472757, 1469562457, 0],
+// [481859, 9175668, 1469577253, 1],
+// [481873, 53942663, 1469600240, 0],
+// [481876, 9175668, 1469600769, 0]]

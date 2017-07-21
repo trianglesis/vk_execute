@@ -1,0 +1,30 @@
+var posts = API.wall.get(
+    {"owner_id":(Args.owner_id),
+     "domain":(Args.domain),
+     "offset":"0",
+     "count":"1",
+     "filter":"all",
+     "extended":"0",
+     "v":"5.42"});
+var posts_cnt = posts.count;
+posts = posts.items;
+// var offset_posts = 100;
+var offset_posts = Args.global_offset_posts;
+var run_count = 0;
+var iter_count = 0;
+while (iter_count > run_count )
+    {posts = posts + API.wall.get(
+        {"owner_id":(Args.owner_id),
+         "domain":(Args.domain),
+         "offset":(offset_posts),
+         "count":"1",
+         "filter":"all",
+         "extended":"0",
+         "v":"5.42"}
+        ).items;
+    // offset_posts = offset_posts + 100;
+    run_count = run_count + 1;};
+return {"posts_cnt": posts_cnt,
+        "run_count":run_count,
+        "iter_count":iter_count,
+        "posts": posts};

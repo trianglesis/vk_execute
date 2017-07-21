@@ -1,0 +1,45 @@
+var comment;
+var comment_id;
+var comment_from_id;
+var comment_date;
+var comment_likes;
+var comments_format;
+var comments_list = [];
+
+var myList = Args.comment_id_array_str;
+var listSeparator = ",";
+var listItemsType = "integer";
+var result = [];
+var charsLength = myList.length;
+var currentPosition = 0;
+var previousSeparatorPosition = -1;
+var item;
+while (currentPosition < charsLength) {
+ if (myList.substr(currentPosition, 1) == listSeparator) {
+  item = myList.substr(previousSeparatorPosition + 1, currentPosition - previousSeparatorPosition - 1);
+  if (listItemsType == "integer") {
+   item = parseInt(item);
+  }
+  result.push(item);
+  previousSeparatorPosition = currentPosition;
+ }
+ currentPosition = currentPosition + 1;
+}
+var comment_id;
+var comments = result;
+
+while (comments.length != 0){comment_id = comments.shift();
+        var owner_id = Args.owner_id;
+        var comments = API.wall.deleteComment(
+            {"owner_id":(owner_id),
+             "comment_id":(comment_id),
+             "v":"5.45"});
+        var comments_cnt = comments.count;
+        var offset_comments = 1;
+        while (offset_comments < comments_cnt)
+            {comments = comments + API.wall.deleteComment(
+                {"owner_id":(Args.owner_id),
+                 "comment_id":(comment_id),
+                 "v":"5.45"});
+                 offset_comments = offset_comments + 1;};
+    };

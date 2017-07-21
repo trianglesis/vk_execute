@@ -1,0 +1,49 @@
+var posts_cnt;
+var posts;
+var post;
+var post_format;
+var post_id;
+var post_from_id;
+// var post_owner_id;
+var post_date;
+var post_comments_cnt;
+var post_likes_cnt;
+var post_repost_cnt;
+var post_list = [];
+var offset_posts = 0;
+var run_count = 0;
+var iter_count = 1;
+while (iter_count > run_count )
+    {posts = API.wall.get(
+        {"owner_id":(Args.owner_id),
+         "domain":(Args.domain),
+         "offset":(offset_posts),
+         "count":"100",
+         "filter":"all",
+         "extended":"0",
+         "v":"5.42"}
+        );
+    post = posts.items;
+    post_id = post@.id;
+    post_from_id = post@.from_id;
+    // post_owner_id = post@.owner_id;
+    post_date = post@.date;
+    post_comments_cnt = post@.comments;
+    post_comments_cnt = post_comments_cnt@.count;
+    post_likes_cnt = post@.likes;
+    post_likes_cnt = post_likes_cnt@.count;
+    post_repost_cnt = post@.reposts;
+    post_repost_cnt = post_repost_cnt@.count;
+    post_format = [(post_id),(post_date),(post_comments_cnt),(post_likes_cnt),(post_repost_cnt),(post_from_id)];
+    // post_list.push(posts.items@.id);
+    post_list.push(post_format);
+    offset_posts = offset_posts + 100;
+    run_count = run_count + 1;
+    posts_cnt = posts.count;
+    };
+return {"posts_cnt": posts_cnt,
+        "run_count":run_count,
+        "iter_count":iter_count,
+        "offset_posts": offset_posts,
+        "posts": post_list};
+// return post_list;

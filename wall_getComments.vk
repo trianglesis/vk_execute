@@ -1,0 +1,27 @@
+var comments = API.wall.getComments(
+    {"owner_id":(Args.owner_id),
+     "post_id":(Args.post_id),
+     "need_likes":"1",
+     "offset":"0",
+     "count":"100",
+     "sort":"asc",
+     "preview_length":"1",
+     "extended":"0",
+     "v":"5.27"});
+var comments_cnt = comments.count;
+comments = comments.items;
+var offset_comments = 100;
+while (offset_comments < comments_cnt)
+    {comments = comments + API.wall.getComments(
+        {"owner_id":(Args.owner_id),
+         "post_id":(Args.post_id),
+         "need_likes":"1",
+         "offset":(offset_comments),
+         "count":"100",
+         "sort":"asc",
+         "preview_length":"1",
+         "extended":"0",
+         "v":"5.27"}
+    ).items;
+offset_comments = offset_comments + 100;};
+return comments;

@@ -1,0 +1,92 @@
+var iter_count = Args.iter_count; // 25
+var offset_posts = Args.global_offset_posts; // 0
+offset_posts = parseInt(offset_posts);
+var run_count = 0;
+var posts;
+var post_list = [];
+
+while (iter_count > run_count )
+    {posts = API.wall.get
+        (
+            {
+                "owner_id":(Args.owner_id), //-46631810
+                "domain":(Args.domain), //typical_kirovohrad
+                "offset":(offset_posts), // start from 0
+                "count":(Args.count),
+                "filter":"all",
+                "extended":"0",
+                "v":"5.42"
+            }
+        );
+        offset_posts = offset_posts + 100;
+        run_count = run_count + 1;
+        post_list.push
+        (
+            {"posts_cnt": posts.count,
+            "run_count":run_count,
+            "iter_count":iter_count,
+            "offset_posts": offset_posts,
+            "posts": posts.items
+            }
+        );
+    };
+
+return post_list;
+
+
+/*
+response: {
+	posts_cnt: 47588,
+	run_count: 25,
+	iter_count: 25,
+	offset_posts: 2500,
+	posts: [{
+		id: 466393,
+		from_id: -46631810,
+		owner_id: -46631810,
+		date: 1463864606,
+		post_type: 'post',
+		text: '',
+		can_delete: 1,
+		can_pin: 1,
+		attachments: [{
+			type: 'photo',
+			photo: {
+				id: 415206802,
+				album_id: -7,
+				owner_id: -46631810,
+				user_id: 13147598,
+				photo_75: 'https: //pp.vk.me/...b40/QzXQlyPkwxw.jpg',
+				photo_130: 'https: //pp.vk.me/...b41/ubOUyW56lYI.jpg',
+				photo_604: 'https: //pp.vk.me/...b42/CE3FvOelX4g.jpg',
+				photo_807: 'https: //pp.vk.me/...b43/6ElYAg5iNFI.jpg',
+				photo_1280: 'https: //pp.vk.me/...b44/bq81OjQi2vA.jpg',
+				photo_2560: 'https: //pp.vk.me/...b45/MTxZlc2ahqo.jpg',
+				width: 1400,
+				height: 644,
+				text: '',
+				date: 1463864606,
+				post_id: 466393,
+				access_key: '760b766dce67dac586'
+			}
+		}],
+		post_source: {
+			type: 'api'
+		},
+		comments: {
+			count: 0,
+			can_post: 1
+		},
+		likes: {
+			count: 20,
+			user_likes: 0,
+			can_like: 1,
+			can_publish: 1
+		},
+		reposts: {
+			count: 0,
+			user_reposted: 0
+		}
+	},
+}
+*/

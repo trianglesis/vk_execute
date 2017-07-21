@@ -1,0 +1,51 @@
+var comment;
+var comment_id;
+var comment_from_id;
+var comments_format;
+var comments_list = [];
+
+var comments = API.wall.getComments(
+    {"owner_id":(Args.owner_id),
+     "post_id":(Args.post_id),
+     "need_likes":"1",
+     "offset":"0",
+     "count":"100",
+     "sort":"asc",
+     "preview_length":"1",
+     "extended":"0",
+     "v":"5.27"});
+     comment = comments.items;
+     comment_id = comment@.id;
+     comment_from_id = comment@.from_id;
+     comments_format = {
+            "comment_id": comment_id,
+            "user_id": comment_from_id
+        };
+     comments_list.push(comments_format);
+var comments_cnt = comments.count;
+var offset_comments = 100;
+while (offset_comments < comments_cnt)
+    {comments = comments + API.wall.getComments(
+        {"owner_id":(Args.owner_id),
+         "post_id":(Args.post_id),
+         "need_likes":"1",
+         "offset":(offset_comments),
+         "count":"100",
+         "sort":"asc",
+         "preview_length":"1",
+         "extended":"0",
+         "v":"5.27"});
+        comment = comments.items;
+        comment_id = comment@.id;
+        comment_from_id = comment@.from_id;
+        comments_format = {
+            "comment_id": comment_id,
+            "user_id": comment_from_id
+        };
+        comments_list.push(comments_format);
+        offset_comments = offset_comments + 100;};
+return comments_list;
+
+
+// while (offset_comments.length != 0){post_id = posts.shift();
+
